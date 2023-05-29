@@ -1,90 +1,90 @@
-let nameInput = document.getElementById('nameInput');
-let nameForm = document.getElementById("nameForm");
-
-const subButton = document.getElementById('subButton');
 const removeAllButton = document.getElementById('removeAllButton');
+let nameInput = document.getElementById('nameInput');
+let ulEmployees = document.getElementById('ulEmployees');
+let storageList = localStorage.getItem('storage') ?
+	JSON.parse(localStorage.getItem('storage')) :
+	[];
 
-let employeesList = localStorage.getItem('employees') ?
-		JSON.parse(localStorage.getItem('employees')) :
-		[];
-
-
-localStorage.setItem('employees', JSON.stringify(employeesList));
-
-subButton.addEventListener('click', insertNewEmployee);
 removeAllButton.addEventListener('click', removeAll);
 
-function updateScreen() {
-	while (ulEmployees.firstChild) {
-		ulEmployees.removeChild(ulEmployees.firstChild)
-	}
-	
-	employeesList.forEach(e => {
-		liCreator(e)
-	});
-
-	localStorage.setItem('employees', JSON.stringify(employeesList));
-}
-
-function insertNewEmployee(e) {
-	e.preventDefault();
-
-	var name = nameInput.value;
-
-	console.log('name: '+ name)
-	employeesList.push(name);
-	localStorage.setItem('employees', JSON.stringify(employeesList))
-
-	liCreator(name);
-
-	nameInput.value = '';
- }
-
- function removeAll(e) {
-	e.preventDefault();
-	
-	localStorage.clear();
-	employeesList = [];
-	updateScreen();
- }
-
-
- editButtonCreator = (li) => {
-	const button = document.createElement('button');
-	button.innerText = 'edit';
-
-	button.addEventListener('click', function () {
-		const i = employeesList.indexOf(li.text);
-		nameInput.value = li.text;
-		employeesList.splice(i,1);
-		updateScreen();
-	});
-
-	li.appendChild(button);
-}
-
-
- removeButtonCreator = (li) => {
+removeButtonCreator = (li) => {
 	const button = document.createElement('button');
 	button.innerText = 'delete';
 
 	button.addEventListener('click', function () {
-		const i = employeesList.indexOf(li.text);
-		employeesList.splice(i,1);
-		updateScreen();
+		const i = storageList.indexOf(li.text);
+		storageList.splice(i,1);
+		updatePage();
 	});
 
 	li.appendChild(button);
+}	
+
+const updatePage = () => {
+	while (ulEmployees.firstChild) {
+		ulEmployees.removeChild(ulEmployees.firstChild)
+	}
+
+	storageList.forEach(item => {
+		liCreator(item)
+	});
+	
+	nameInput.value = ""
+	localStorage.setItem('storage', JSON.stringify(storageList));
+
+	console.log(storageList)
+	console.log(localStorage.getItem('storage'))
 }
 
- const liCreator = (n) => {
-	let liEmployee = document.createElement('li');
-	liEmployee.innerText = n;
-	ulEmployees.appendChild(liEmployee);
-	employeesList.push(n)
 
-	removeButtonCreator(liEmployee);
-	console.log('li employee: ' + liEmployee.innerHTML);
+function create(data) {
+	storageList.push(data);
+	localStorage.setItem('storage', JSON.stringify(storageList));
+}
+
+function edit(index, data) {
+	storageList.splice(index, 0, data);
+	localStorage.setItem('storage', JSON.stringify(storageList));
+}
+
+function remove(index) {
+	storageList.splice(index, 1);
+	localStorage.setItem('storage', JSON.stringify(storageList));
+}
+
+
+function removeAll(e) {
+	e.preventDefault();
 	
-	editButtonCreator(liEmployee);
+	localStorage.clear();
+	storageList = [];
+	updatePage();
+ }
+
+function insertNewEmployee(e) {
+	e.preventDefault();
+	create(nameInput.value);
+}
+
+subButton.addEventListener('click', function (e) {
+	e.preventDefault()
+	let name = nameInput.value;
+
+	create(name);
+	liCreator(name);
+	nameInput.value = '';
+});
+
+storageList.forEach(item => {
+	liCreator(item)
+});
+
+function liCreator(text) {
+	console.log("text: " + text.value)
+	const li = document.createElement('li')
+	li.text = text
+	li.textContent = text
+	ulEmployees.appendChild(li)
+
+	removeButtonCreator(li)
 }
