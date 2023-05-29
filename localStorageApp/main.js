@@ -11,7 +11,6 @@ let employeesList = localStorage.getItem('employees') ?
 
 localStorage.setItem('employees', JSON.stringify(employeesList));
 
-// nameForm.addEventListener('submit', insertNewEmployee);
 subButton.addEventListener('click', insertNewEmployee);
 removeAllButton.addEventListener('click', removeAll);
 
