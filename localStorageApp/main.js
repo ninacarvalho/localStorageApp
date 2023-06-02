@@ -1,10 +1,20 @@
 const removeAllButton = document.getElementById('removeAllButton');
-let nameInput = document.getElementById('nameInput');
+let campoInput = document.getElementById('campoInput');
+let valorInput = document.getElementById('valorInput');
 let ulEmployees = document.getElementById('ulEmployees');
-let storageList = localStorage.getItem('storage') ?
-	JSON.parse(localStorage.getItem('storage')) :
-	[];
 
+const campo = {
+	campo: "",
+	valor: ""
+}
+
+const cadastro = localStorage.getItem('CadastroDescontoPorCliente')?
+		JSON.parse(localStorage.getItem('CadastroDescontoPorCliente')) :
+		{
+			tela: "CadastroDescontoPorCliente",
+			campos: []
+		}
+		
 removeAllButton.addEventListener('click', removeAll);
 
 removeButtonCreator = (li) => {
@@ -25,33 +35,28 @@ const updatePage = () => {
 		ulEmployees.removeChild(ulEmployees.firstChild)
 	}
 
-	storageList.forEach(item => {
-		liCreator(item)
+	cadastro.campos.forEach((campo) => {
+		liCreator(campo.campo, campo.valor)
 	});
 	
-	nameInput.value = ""
-	localStorage.setItem('storage', JSON.stringify(storageList));
-
-	console.log(storageList)
-	console.log(localStorage.getItem('storage'))
+	localStorage.setItem('CadastroDescontoPorCliente', JSON.stringify(cadastro));
 }
 
+function create(dataCampo, dataValor) {
+	campo.campo = dataCampo;
+	campo.valor = dataValor;
+	cadastro.campos.push(campo);
 
-function create(data) {
-	storageList.push(data);
-	localStorage.setItem('storage', JSON.stringify(storageList));
-}
+	localStorage.setItem('CadastroDescontoPorCliente', JSON.stringify(cadastro));
 
-function edit(index, data) {
-	storageList.splice(index, 0, data);
-	localStorage.setItem('storage', JSON.stringify(storageList));
+	const obj = JSON.parse(localStorage.getItem('CadastroDescontoPorCliente'));
+	console.log(obj.tela);
 }
 
 function remove(index) {
 	storageList.splice(index, 1);
 	localStorage.setItem('storage', JSON.stringify(storageList));
 }
-
 
 function removeAll(e) {
 	e.preventDefault();
@@ -61,30 +66,27 @@ function removeAll(e) {
 	updatePage();
  }
 
-function insertNewEmployee(e) {
-	e.preventDefault();
-	create(nameInput.value);
-}
-
 subButton.addEventListener('click', function (e) {
 	e.preventDefault()
-	let name = nameInput.value;
+	let campo = campoInput.value;
+	let valor = valorInput.value;
 
-	create(name);
-	liCreator(name);
-	nameInput.value = '';
+	create(campo, valor);
+	liCreator(campo, valor);
+	campoInput.value = '';
+	valorInput.value = '';
 });
 
-storageList.forEach(item => {
-	liCreator(item)
+cadastro.campos.forEach((campo) => {
+	liCreator(campo.campo, campo.valor)
 });
 
-function liCreator(text) {
-	console.log("text: " + text.value)
-	const li = document.createElement('li')
-	li.text = text
-	li.textContent = text
-	ulEmployees.appendChild(li)
+function liCreator(campo, valor) {
+	let text = campo + ': ' + valor;
+	const li = document.createElement('li');
+	li.text = text;
+	li.textContent = text;
+	ulEmployees.appendChild(li);
 
-	removeButtonCreator(li)
+	removeButtonCreator(li);
 }
