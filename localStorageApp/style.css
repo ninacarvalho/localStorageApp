@@ -1,0 +1,23 @@
+body {
+	font-family: sans-serif;
+	margin: 0 50px;
+}
+
+.container {
+	gap: 50px;
+}
+
+p {
+font-family: verdana;
+font-size: 20px;
+}
+
+nameForm {
+width: 50%;
+
+}
+
+nameInput {
+width: 25%;
+
+}
